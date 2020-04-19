@@ -88,18 +88,18 @@ class JupyterLabSublime {
       });
     }
 
-    // Manage Ctrl-M collision
-    commands.addCommand('sublime:go-to-bracket', {
-      execute: () => {
-        editorExec('goToBracket');
-      },
-      label: 'Go to bracket'
-    });
-    commands.addKeyBinding({
-      command: 'sublime:go-to-bracket',
-      keys: ['Ctrl M'],
-      selector: '.CodeMirror-focused'
-    });
+//     // Manage Ctrl-M collision
+//     commands.addCommand('sublime:go-to-bracket', {
+//       execute: () => {
+//         editorExec('goToBracket');
+//       },
+//       label: 'Go to bracket'
+//     });
+//     commands.addKeyBinding({
+//       command: 'sublime:go-to-bracket',
+//       keys: ['Ctrl M'],
+//       selector: '.CodeMirror-focused'
+//     });
 
     // Manage Shift-Ctrl-D collision
     commands.addCommand('sublime:duplicate-line', {
