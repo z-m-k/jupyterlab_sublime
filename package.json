@@ -1,6 +1,6 @@
 {
-  "name": "@ryantam626/jupyterlab_sublime",
-  "version": "0.3.0",
+  "name": "@z-m-k/jupyterlab_sublime",
+  "version": "0.3.2",
   "description": "Sublime notebook cell binding for JupyterLab",
   "keywords": [
     "jupyter",
@@ -32,8 +32,8 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@jupyterlab/application": "^2.0.0",
-    "@jupyterlab/notebook": "^2.0.0",
+    "@jupyterlab/application": "^2.3.0",
+    "@jupyterlab/notebook": "^2.3.0",
     "@types/codemirror": "0.0.76"
   },
   "devDependencies": {
