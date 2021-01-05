@@ -9,8 +9,6 @@ import { CodeMirrorEditor } from '@jupyterlab/codemirror';
 
 import '../style/index.css';
 
-const IS_MAC = !!navigator.platform.match(/Mac/i);
-
 class JupyterLabSublime {
   private tracker: INotebookTracker;
   private app: JupyterFrontEnd;
@@ -19,8 +17,8 @@ class JupyterLabSublime {
     this.app = app;
     this.tracker = tracker;
     this.addCommands();
-    this.onAcitveCellChanged();
-    this.tracker.activeCellChanged.connect(this.onAcitveCellChanged, this);
+    this.onActiveCellChanged();
+    this.tracker.activeCellChanged.connect(this.onActiveCellChanged, this);
   }
 
   private addCommands() {
@@ -43,6 +41,19 @@ class JupyterLabSublime {
     commands.addKeyBinding({
       command: 'sublime:exit-editor',
       keys: ['Escape'],
+      selector: '.CodeMirror-focused'
+    });
+
+    // Manage Ctrl-/ collision
+    commands.addCommand('sublime:toggle-comment-indented', {
+      execute: () => {
+        editorExec('toggleCommentIndented');
+      },
+      label: 'Split selection by line'
+    });
+    commands.addKeyBinding({
+      command: 'sublime:toggle-comment-indented',
+      keys: ['Accel /'],
       selector: '.CodeMirror-focused'
     });
 
@@ -74,32 +85,24 @@ class JupyterLabSublime {
       },
       label: 'Split selection by line'
     });
-    if (IS_MAC) {
-      commands.addKeyBinding({
-        command: 'sublime:split-selection-by-lLine',
-        keys: ['Accel Shift L'],
-        selector: '.CodeMirror-focused'
-      });
-    } else {
-      commands.addKeyBinding({
-        command: 'sublime:split-selection-by-lLine',
-        keys: ['Ctrl Shift L'],
-        selector: '.CodeMirror-focused'
-      });
-    }
+    commands.addKeyBinding({
+      command: 'sublime:split-selection-by-lLine',
+      keys: ['Ctrl Shift L'],
+      selector: '.CodeMirror-focused'
+    });
 
-//     // Manage Ctrl-M collision
-//     commands.addCommand('sublime:go-to-bracket', {
-//       execute: () => {
-//         editorExec('goToBracket');
-//       },
-//       label: 'Go to bracket'
-//     });
-//     commands.addKeyBinding({
-//       command: 'sublime:go-to-bracket',
-//       keys: ['Ctrl M'],
-//       selector: '.CodeMirror-focused'
-//     });
+    // Manage Ctrl-M collision
+//    commands.addCommand('sublime:go-to-bracket', {
+//      execute: () => {
+//        editorExec('goToBracket');
+//      },
+//      label: 'Go to bracket'
+//    });
+//    commands.addKeyBinding({
+//      command: 'sublime:go-to-bracket',
+//      keys: ['Ctrl M'],
+//      selector: '.CodeMirror-focused'
+//    });
 
     // Manage Shift-Ctrl-D collision
     commands.addCommand('sublime:duplicate-line', {
@@ -108,19 +111,11 @@ class JupyterLabSublime {
       },
       label: 'Duplicate line'
     });
-    if (IS_MAC) {
-      commands.addKeyBinding({
-        command: 'sublime:duplicate-line',
-        keys: ['Accel Shift D'],
-        selector: '.CodeMirror-focused'
-      });
-    } else {
-      commands.addKeyBinding({
-        command: 'sublime:duplicate-line',
-        keys: ['Ctrl Shift D'],
-        selector: '.CodeMirror-focused'
-      });
-    }
+    commands.addKeyBinding({
+      command: 'sublime:duplicate-line',
+      keys: ['Ctrl Shift D'],
+      selector: '.CodeMirror-focused'
+    });
 
     // Repurpose Ctrl-Up
     commands.addCommand('sublime:add-cursor-to-prev-line', {
@@ -227,7 +222,7 @@ class JupyterLabSublime {
     });
   }
 
-  private onAcitveCellChanged(): void {
+  private onActiveCellChanged(): void {
     const activeCell = this.tracker.activeCell;
     if (activeCell !== null) {
       (activeCell.editor as CodeMirrorEditor).setOption('keyMap', 'sublime');
